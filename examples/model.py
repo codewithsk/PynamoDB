@@ -3,7 +3,6 @@ An example using Amazon's Thread example for motivation
 
 http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SampleTablesAndData.html
 """
-from __future__ import print_function
 import logging
 from pynamodb.models import Model
 from pynamodb.attributes import (
@@ -30,6 +29,8 @@ class Thread(Model):
     answered = NumberAttribute(default=0)
     tags = UnicodeSetAttribute()
     last_post_datetime = UTCDateTimeAttribute(null=True)
+    notes = ListAttribute(default=list)
+
 
 # Delete the table
 # print(Thread.delete_table())
@@ -194,25 +195,19 @@ print(thread_item.update(actions=[
     Thread.tags.remove()
 ]))
 
+# Update list attribute
+print(thread_item.update(actions=[
+    Thread.notes.set(
+        Thread.notes.append(["new note"])
+    )
+]))
+
 # Backup/restore example
 # Print the size of the table
 print("Table size: {}".format(Thread.describe_table().get('ItemCount')))
-
-# Dump the entire table to a file
-Thread.dump('thread.json')
 
 # Optionally Delete all table items
 # Commented out for safety
 # for item in Thread.scan():
 #     item.delete()
 print("Table size: {}".format(Thread.describe_table().get('ItemCount')))
-
-# Restore table from a file
-Thread.load('thread.json')
-print("Table size: {}".format(Thread.describe_table().get('ItemCount')))
-
-# Dump the entire table to a string
-serialized = Thread.dumps()
-
-# Load the entire table from a string
-Thread.loads(serialized)

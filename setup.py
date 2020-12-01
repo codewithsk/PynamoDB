@@ -1,38 +1,16 @@
-import os
-import sys
-
 from setuptools import setup, find_packages
 
 
-def find_stubs(package):
-    stubs = []
-    for root, dirs, files in os.walk(package):
-        for f in files:
-            path = os.path.join(root, f).replace(package + os.sep, '', 1)
-            if path.endswith('.pyi') or path.endswith('py.typed'):
-                stubs.append(path)
-    return {package: stubs}
-
-
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    os.system('python setup.py bdist_wheel upload')
-    print("Now tag me :)")
-    print("  git tag -a {0} -m 'version {0}'".format(__import__('pynamodb').__version__))
-    print("  git push --tags")
-    sys.exit()
-
 install_requires = [
-    'six',
-    'botocore>=1.2.0',
-    'amazon-dax-client>=1.0.6;python_version>="2.7" and python_version>="3.5"',
-    'python-dateutil>=2.1,<3.0.0',
+    'botocore>=1.12.54',
+    'amazon-dax-client==1.0.6',
+    'typing-extensions>=3.7; python_version<"3.8"'
 ]
 
 setup(
     name='pynamodb',
     version=__import__('pynamodb').__version__,
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests', 'tests.integration',)),
     url='http://jlafon.io/pynamodb.html',
     author='Jharrod LaFon',
     author_email='jlafon@eyesopen.com',
@@ -41,18 +19,20 @@ setup(
     zip_safe=False,
     license='MIT',
     keywords='python dynamodb amazon',
+    python_requires=">=3.6",
     install_requires=install_requires,
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Programming Language :: Python',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'License :: OSI Approved :: MIT License',
     ],
     extras_require={
         'signals': ['blinker>=1.3,<2.0'],
     },
-    package_data=find_stubs('pynamodb'),
+    package_data={'pynamodb': ['py.typed']},
 )

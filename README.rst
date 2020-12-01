@@ -4,13 +4,14 @@ PynamoDB
 
 .. image:: https://img.shields.io/pypi/v/pynamodb.svg
     :target: https://pypi.python.org/pypi/pynamodb/
+.. image:: https://img.shields.io/conda/vn/conda-forge/pynamodb.svg
+    :target: https://anaconda.org/conda-forge/pynamodb
 .. image:: https://img.shields.io/travis/pynamodb/PynamoDB/master.svg
     :target: https://travis-ci.org/pynamodb/PynamoDB
 .. image:: https://img.shields.io/coveralls/pynamodb/PynamoDB/master.svg
     :target: https://coveralls.io/r/pynamodb/PynamoDB
 
-A Pythonic interface for Amazon's `DynamoDB <http://aws.amazon.com/dynamodb/>`_ that supports
-Python 2 and 3.
+A Pythonic interface for Amazon's `DynamoDB <http://aws.amazon.com/dynamodb/>`_.
 
 DynamoDB is a great NoSQL service provided by Amazon, but the API is verbose.
 PynamoDB presents you with a simple, elegant API.
@@ -18,7 +19,7 @@ PynamoDB presents you with a simple, elegant API.
 Useful links:
 
 * See the full documentation at https://pynamodb.readthedocs.io/
-* Ask questions at `Google group <https://groups.google.com/forum/#!forum/pynamodb>`_
+* Ask questions in the `GitHub issues <https://github.com/pynamodb/PynamoDB/issues>`_
 * See release notes at https://pynamodb.readthedocs.io/en/latest/release_notes.html
 
 Installation
@@ -30,6 +31,10 @@ From PyPi::
 From GitHub::
 
     $ pip install git+https://github.com/pynamodb/PynamoDB#egg=pynamodb
+
+From conda-forge::
+
+    $ conda install -c conda-forge pynamodb
 
 Upgrading
 =========
@@ -103,30 +108,24 @@ Create a new user:
     user.email = "djohn@company.org"
     user.save()
 
-Now, search your table for all users with a last name of 'John' and whose
-first name begins with 'D':
+Now, search your table for all users with a last name of 'Denver' and whose
+first name begins with 'J':
 
 .. code-block:: python
 
-    for user in UserModel.query("John", first_name__begins_with="D"):
+    for user in UserModel.query("Denver", UserModel.first_name.startswith("J")):
         print(user.first_name)
 
 Examples of ways to query your table with filter conditions:
 
 .. code-block:: python
 
-    for user in UserModel.query("John", filter_condition= (UserModel.email=="djohn@company.org")):
+    for user in UserModel.query("Denver", UserModel.email=="djohn@company.org"):
         print(user.first_name)
 
 .. code-block:: python
 
-    for user in UserModel.query("John", UserModel.email=="djohn@company.org"):
-        print(user.first_name)
-
-.. code-block:: python
-
-    # Deprecated, use UserModel.email=="djohn@company.org" instead
-    for user in UserModel.query("John", email__eq="djohn@company.org"):
+    for user in UserModel.query("Denver", UserModel.email=="djohn@company.org"):
         print(user.first_name)
 
 Retrieve an existing user:
@@ -214,30 +213,17 @@ the type of data you'd like to stream.
         name = UnicodeAttribute(range_key=True)
         id = UnicodeAttribute(hash_key=True)
 
-Want to backup and restore a table? No problem.
-
-.. code-block:: python
-
-    # Backup the table
-    UserModel.dump("usermodel_backup.json")
-
-    # Restore the table
-    UserModel.load("usermodel_backup.json")
-
-
 Features
 ========
 
-* Python 3.3, 3.4, 2.7 support
+* Python >= 3.6 support
 * An ORM-like interface with query and scan filters
 * Compatible with DynamoDB Local
 * Supports the entire DynamoDB API
-* Full table backup/restore
 * Support for Unicode, Binary, JSON, Number, Set, and UTC Datetime attributes
 * Support for Global and Local Secondary Indexes
 * Provides iterators for working with queries, scans, that are automatically paginated
 * Automatic pagination for bulk operations
 * Complex queries
-* Support for Global and Local Secondary Indexes
 * Batch operations with automatic pagination
 * Iterators for working with Query and Scan operations
